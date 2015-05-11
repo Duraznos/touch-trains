@@ -11,19 +11,20 @@
 
 #ifndef TOUCH_TRAINS_TRAIN_H
 #define TOUCH_TRAINS_TRAIN_H
+typedef struct train Train;
 
-
-typedef struct train{
+struct train{
     int                 id;
     Line               *line;
-    direction           train_direction;
+    Direction          direction;
     Station            *cur_station;
-} Train;
+    Letter             letter;
+};
 
 #define INVALID_DIRECTION 1
 #define IMPOSSIBLE_DIRECTION 2
 
-Train * new_train(Station *starting_station, direction init_direction);
+Train * new_train(Station *starting_station, Direction init_direction, Letter letter);
 void change_direction(Train *train);
 void move_train(Train *train);
 

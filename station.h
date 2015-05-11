@@ -11,20 +11,24 @@ typedef struct station Station;
 typedef struct connection Connection;
 
 struct connection{
-    Station*            target;
-    color               line_color;
-    direction           conn_direction;
+    Station    *target;
+    Direction   direction;
+    Letter      letter;
+    Color       color;
+
 };
 
 struct station{
     int                 id;
-    Connection         *inbound_connection;
-    Connection         *outbound_connection;
+    Letter              letter_in;
+    Letter                letter_out;
+    Connection         *inbound_connection[MAX_LETTERS];
+    Connection         *outbound_connection[MAX_LETTERS];
 };
 
 
 Station *new_station();
-Connection *new_connection(Station *target, direction conn_direction ,color line_color);
-void connect_station(Station *current, Connection *new_connection);
+Connection *new_connection(Station *target, Direction direction , Color color, Letter letter);
+void connect_station(Station *inbound, Station *outbound);
 
 #endif //TOUCH_TRAINS_STATION_H

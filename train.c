@@ -4,14 +4,15 @@
 
 #include "train.h"
 
-Train *new_train(Station *start, direction train_direction){
+Train *new_train(Station *start, Direction train_direction, Letter letter){
 
     static int next_id = 1;
     Train *train = (Train *)malloc(sizeof(Train));
     if(train) {
         train->id = next_id++;
-        train->train_direction = train_direction;
+        train->direction = train_direction;
         train->cur_station = start;
+        train->letter = letter;
         return train;
     }
     return NULL;
@@ -21,15 +22,15 @@ Train *new_train(Station *start, direction train_direction){
 
 void change_direction(Train *train)
 {
-    switch (train->train_direction)
+    switch (train->direction)
     {
         case INBOUND:{
-            train->train_direction = OUTBOUND;
+            train->direction = OUTBOUND;
             printf("train %d is now headed outbound\n", train->id);
         } break;
 
         case OUTBOUND:{
-            train->train_direction = INBOUND;
+            train->direction = INBOUND;
             printf("train %d is now headed inbound\n", train->id);
         };
     }
@@ -38,11 +39,11 @@ void change_direction(Train *train)
 
 void move_train(Train *train){
     Station *next_station;
-    switch(train->train_direction)
+    switch(train->direction)
     {
         case INBOUND:{
-            if (train->cur_station->inbound_connection){
-                next_station = train->cur_station->inbound_connection->target;
+            if (train->cur_station->inbound_connection[train->letter]){
+                next_station = train->cur_station->inbound_connection[train->letter]->target;
                 printf("train %d leaving station %d heading inbound for station %d\n", train->id, train->cur_station->id, next_station->id);
                 train->cur_station = next_station;
             } else {
@@ -51,8 +52,8 @@ void move_train(Train *train){
             }
         } break;
         case OUTBOUND:{
-            if (train->cur_station->outbound_connection){
-                next_station =  train->cur_station->outbound_connection->target;
+            if (train->cur_station->outbound_connection[train->letter]){
+                next_station =  train->cur_station->outbound_connection[train->letter]->target;
                 printf("train %d leaving station %d heading outbound for station %d\n", train->id, train->cur_station->id, next_station->id);
                 train->cur_station = next_station;
             } else {

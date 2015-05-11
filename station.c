@@ -9,8 +9,8 @@ Station *new_station(){
     Station *station = (Station *)malloc(sizeof(Station));
     if (station){
         station->id = next_id++;
-        station->inbound_connection = NULL;
-        station->outbound_connection = NULL;
+        station->letter_in = A;
+        station->letter_out = A;
         return station;
     }
 
@@ -18,28 +18,36 @@ Station *new_station(){
 }
 
 
-Connection *new_connection(Station *target, direction conn_direction ,color line_color){
+Connection *new_connection(Station *target, Direction direction , Color color, Letter letter){
+    if (target->letter_in >= MAX_LETTERS && direction == INBOUND)
+        return NULL;
+    if (target->letter_out >= MAX_LETTERS && direction == OUTBOUND)
+        return NULL;
+
     Connection *connection = (Connection *)malloc(sizeof(Connection));
     if(connection){
         connection->target = target;
-        connection->conn_direction = conn_direction;
-        connection->line_color = line_color;
+        connection->direction = direction;
+        connection->color = color;
+        connection->letter = letter;
+        switch(direction){
+            case INBOUND:{
+                target->letter_in++;
+            }break;
+            case OUTBOUND:{
+                target->letter_out++;
+            } break;
+        }
         return connection;
     }
     return NULL;
 }
 
 
-void connect_station(Station *current, Connection *new_connection){
-    switch(new_connection->conn_direction){
-        case INBOUND:
-        {
-            current->inbound_connection = new_connection;
-        } break;
+void connect_station(Station *inbound, Station *outbound){
 
-        case OUTBOUND:
-        {
-            current->outbound_connection = new_connection;
-        };
-    }
+    Connection *in_conn = new_connection(outbound,INBOUND,GREEN, inbound->letter_in);
+    Connection *out_conn = new_connection(inbound, OUTBOUND, GREEN, outbound->letter_out);
+    inbound->inbound_connection[in_conn->letter] = in_conn;
+    outbound->outbound_connection[out_conn->letter] = out_conn;
 }

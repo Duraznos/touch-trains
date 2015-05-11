@@ -7,11 +7,11 @@
 #ifndef TOUCH_TRAINS_LINE_H
 #define TOUCH_TRAINS_LINE_H
 
+typedef struct line Line;
 
-
-typedef struct line {
+struct line {
     int id;
 
-} Line;
+};
 
 #endif //TOUCH_TRAINS_LINE_H
